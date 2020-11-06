@@ -13,8 +13,7 @@ function killer(suspectInfo, deadFolks) {
       }
     }
   })
-  var killer = mostFrequent(suspects)
-  console.log(killer)
+  return mostFrequent(suspects)
 }
 
 function mostFrequent(names){
@@ -24,11 +23,8 @@ function mostFrequent(names){
    for(var i = 0; i < names.length; i++){
        var name = names[i];
 
-       if(counts[name] === undefined){
-           counts[name] = 1;
-       }else{
-           counts[name] = counts[name] + 1;
-       }
+       counts[name]? counts[name] +=1 : counts[name] = 1
+
        if(counts[name] > compare){
              compare = counts[name];
              mostFrequent = names[i];
