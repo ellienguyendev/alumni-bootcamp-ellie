@@ -1,31 +1,25 @@
-import React, { useState} from 'react'
+import React, { useState, useEffect } from 'react'
 import FilterName from './components/FilterName'
 import Phonebook from './components/Phonebook'
+import axios from 'axios'
 
 
 const AppPhonebook = () => {
-    const [ persons, setPersons ] = useState([
-        { 
-            name: 'Ellie Moon',
-            number: '222-222-2222'
-        },
-        {
-            name:'Erica Star',
-            number: '444-444-4444'
-        },
-        {
-            name:'Luna Lovegood',
-            number: '333-333-3333'
-        },
-        {
-            name:'Leon Nova',
-            number: '111-111-1111'
-        }
-    ])
+    const [ persons, setPersons ] = useState([])
     const [ newName, setNewName] = useState('')
     const [ newNumber, setNewNumber] = useState('')
     const [ newSearch, setNewSearch] = useState('')
     const [showAll, setShowAll] = useState(true)
+
+    const hook = () => {
+        axios
+          .get('http://localhost:3001/persons')
+          .then(response => {
+            setPersons(response.data)
+          })
+      }
+      
+      useEffect(hook, [])
 
     const peopleToShow = showAll
     ? persons
