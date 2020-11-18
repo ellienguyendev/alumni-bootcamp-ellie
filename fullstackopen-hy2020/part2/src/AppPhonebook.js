@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import FilterName from './components/FilterName'
-import Phonebook from './components/Phonebook'
-import axios from 'axios'
+import Notification from './components/Notification'
+import Person from './components/Person'
+import phoneService from './services/phonebook.js'
+import './index.css'
 
 
 const AppPhonebook = () => {
@@ -10,16 +12,16 @@ const AppPhonebook = () => {
     const [ newNumber, setNewNumber] = useState('')
     const [ newSearch, setNewSearch] = useState('')
     const [showAll, setShowAll] = useState(true)
+    const [notificationMessage, setNotification] = useState(null)
 
-    const hook = () => {
-        axios
-          .get('http://localhost:3001/persons')
-          .then(response => {
-            setPersons(response.data)
+
+    useEffect(() => {
+        phoneService
+          .getAll()
+          .then(initialEntries => {
+            setPersons(initialEntries)
           })
-      }
-      
-      useEffect(hook, [])
+      }, [])
 
     const peopleToShow = showAll
     ? persons
@@ -47,26 +49,75 @@ const AppPhonebook = () => {
 
     const addPerson = (event) => {
         event.preventDefault()  
-        var duplicate = persons.find(person => person.name === newName)
-        
-        if(duplicate){
-            alert(`${newName} is already in your phonebook`)
+        var existingContact = persons.find(person => person.name === newName)
+        const changedNumber = { ...existingContact, number: newNumber }
+
+        if(existingContact){
+            if (window.confirm(`${existingContact.name} is already added to phonebook, replace the old number with a new one?`)) { 
+                phoneService
+                    .update(existingContact.id, changedNumber)
+                    .then(() => {
+                        setNotification(
+                            `${existingContact.name}'s number shifted forms!`
+                          )
+                          setTimeout(() => {
+                            setNotification(null)
+                          }, 5000)
+                        setPersons(persons.map(person => person.name === existingContact.name ? changedNumber : person))
+                    })
+              }
         } else {
-            const nameObject= {
+            const personObject= {
                 name: newName,
                 number: newNumber
             }
-            setPersons(persons.concat(nameObject))
+            phoneService
+                .create(personObject)
+                .then(returnedPerson => {
+                    setNotification(
+                        `A star was born: ${returnedPerson.name}!`
+                      )
+                      setTimeout(() => {
+                        setNotification(null)
+                      }, 5000)
+                    setPersons(persons.concat(returnedPerson))
+            })
         }
-        
+
         setNewName('')
         setNewNumber('')
     }
 
+    const handleDeletePerson = (event) => {
+        var arr = event.target.value.split(',')
+        const id = arr[0]
+        const name = arr[1]
+        if (window.confirm(`Delete ${name}?`)) { 
+            phoneService
+                .deletePerson(id)
+                .then(() => {
+                    setNotification(
+                        `${name} flew alway from this multiverse`
+                      )
+                      setTimeout(() => {
+                        setNotification(null)
+                      }, 5000)
+                    phoneService
+                        .getAll()
+                        .then(updatedEntries => {
+                        setPersons(updatedEntries)
+                        })
+                })
+          }  
+    }
+
     return(
         <div>
-            <h2>Phonebook</h2>
+            <h1>Intergalactic Phonebook</h1>
+            <Notification message={notificationMessage} />
+
             <FilterName value={newSearch} onChange={handleSearchChange}/>
+            <h2>Add New or Change Number</h2>
             <form onSubmit={addPerson}>
                 <div>
                     name: <input value={newName} onChange={handleNameChange} />
@@ -78,7 +129,14 @@ const AppPhonebook = () => {
                 </div>
             </form>
             <h2>Numbers</h2>
-            <Phonebook peopleToShow={peopleToShow} />
+            <ul>
+                {peopleToShow.map(person => 
+                    <div key={person.name} >
+                        <Person name={person.name} number={person.number} id={person.id}/>
+                        <button value ={[person.id, person.name]} onClick={handleDeletePerson}>delete</button>
+                    </div>
+                )}
+            </ul>
             
         </div>
     )
