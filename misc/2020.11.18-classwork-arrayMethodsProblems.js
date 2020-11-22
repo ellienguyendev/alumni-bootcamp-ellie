@@ -22,7 +22,7 @@ const familyAges = arr => {
 // [ 6, 2, 1, 8, 10 ] => 16
 // [ 1, 1, 11, 2, 3 ] => 6
 
-const sumOfInBetween = arr => arr.sort((a,b) => a-b).pop()
+const sumOfInBetween = arr => arr.sort((a,b) => a-b)
 
 console.log(sumOfInBetween([ 6, 2, 1, 8, 10 ]))
 // Use string methods - try solving in one line for each using ES6+ (is it possible?)
