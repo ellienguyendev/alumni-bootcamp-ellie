@@ -1,8 +1,6 @@
 // Description
 // For this Kata you will be given an array of numbers and another number n. You have to find the sum of the n largest numbers of the array and the product of the n smallest numbers of the array, and compare the two.
 
-const e = require("express")
-
 // If the sum of the n largest numbers is higher, return "sum"
 // If the product of the n smallest numbers is higher, return "product"
 // If the 2 values are equal, return "same"
