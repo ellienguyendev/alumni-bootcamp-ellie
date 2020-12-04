@@ -4,6 +4,8 @@ import Notification from './components/Notification'
 import noteService from './services/notes.js'
 import './index.css'
 
+
+
 const AppNotes = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('') 

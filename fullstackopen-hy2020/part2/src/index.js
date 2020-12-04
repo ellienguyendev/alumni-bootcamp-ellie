@@ -1,8 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import AppPhonebook from './AppPhonebook'
+import AppNotes from './AppNotes'
 
 ReactDOM.render(
-  <AppPhonebook />,
+  <AppNotes />,
   document.getElementById('root')
 )
