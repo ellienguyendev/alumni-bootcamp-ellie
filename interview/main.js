@@ -1,4 +1,6 @@
-//gicen arr of ints as strings and numbers
+// mock with Leon 12.4.2020
+
+//given arr of ints as strings and numbers
 // return sum as if all number 
 // arr with mixed int and string 
 // return sum of elements 
